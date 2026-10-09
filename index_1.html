@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#12181f">
+<title>Rapportino Cantiere — Antes</title>
+<style>
+  :root{
+    --ink:#12181f; --steel:#1f2a36; --steel2:#26333f; --line:#33414f;
+    --amber:#f2a900; --amber-dk:#c98a00; --paper:#eef1f4; --mute:#8a99a8;
+    --ok:#2fbf71; --bad:#e8564b;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;}
+  body{background:var(--ink);color:var(--paper);font-family:"Segoe UI",system-ui,-apple-system,sans-serif;min-height:100dvh;overscroll-behavior:none;padding-bottom:96px;}
+  header{position:sticky;top:0;z-index:5;background:var(--ink);padding:12px 16px 10px;border-bottom:1px solid var(--line);}
+  .brand{font-weight:800;letter-spacing:.14em;font-size:14px;text-transform:uppercase;}
+  .brand span{color:var(--amber);}
+  .sub{font-size:11px;color:var(--mute);margin-top:2px;}
+  .bar{display:flex;gap:8px;align-items:center;margin-top:8px;font-size:12px;color:var(--mute);flex-wrap:wrap;}
+  .pill{background:var(--steel);border:1px solid var(--line);border-radius:999px;padding:4px 10px;color:var(--paper);}
+  .pill b{color:var(--amber);font-weight:700;}
+  main{padding:12px 16px;}
+  h2{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:20px 0 8px;}
+  label{display:block;font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.1em;margin:12px 0 5px;}
+  input,select,textarea{width:100%;background:var(--steel);border:1px solid var(--line);color:var(--paper);border-radius:10px;padding:12px 13px;font-size:16px;font-family:inherit;}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--amber);}
+  textarea{min-height:90px;resize:vertical;}
+  .row{display:flex;gap:10px;} .row>div{flex:1;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{background:var(--steel);border:1px solid var(--line);color:var(--paper);border-radius:999px;padding:9px 14px;font-size:14px;}
+  .chip.on{background:var(--amber);color:var(--ink);border-color:var(--amber);font-weight:700;}
+  button{font-family:inherit;cursor:pointer;}
+  .btn{width:100%;border:0;border-radius:12px;padding:15px;font-size:16px;font-weight:800;letter-spacing:.04em;background:var(--amber);color:var(--ink);}
+  .btn:active{background:var(--amber-dk);}
+  .btn.ghost{background:transparent;color:var(--paper);border:1px solid var(--line);font-weight:600;}
+  .btn.danger{background:transparent;color:var(--bad);border:1px solid var(--bad);font-weight:600;}
+  .cap{margin:18px 0 6px;font-size:12px;font-weight:800;color:var(--amber);letter-spacing:.08em;text-transform:uppercase;}
+  .voce{display:flex;align-items:center;gap:10px;background:var(--steel);border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin-bottom:7px;width:100%;text-align:left;color:var(--paper);}
+  .voce .t{flex:1;min-width:0;}
+  .voce .a{font-size:11px;color:var(--mute);letter-spacing:.04em;}
+  .voce .d{font-size:14px;line-height:1.25;margin-top:2px;}
+  .voce .q{text-align:right;font-size:15px;font-weight:800;color:var(--mute);white-space:nowrap;}
+  .voce.has{border-color:var(--amber);}
+  .voce.has .q{color:var(--amber);}
+  .voce .q small{display:block;font-size:10px;font-weight:600;color:var(--mute);}
+  .entries{margin:-3px 0 9px 14px;border-left:2px solid var(--line);padding-left:10px;}
+  .entry{display:flex;align-items:center;gap:8px;font-size:13px;padding:5px 0;color:var(--paper);}
+  .entry .x{margin-left:auto;background:none;border:0;color:var(--bad);font-size:20px;padding:0 6px;}
+  .entry span.m{color:var(--mute);}
+  .foot{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(transparent,var(--ink) 30%);padding:22px 16px 16px;z-index:6;}
+  .hidden{display:none!important;}
+  /* sheet */
+  .shade{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:20;display:flex;align-items:flex-end;}
+  .sheet{background:var(--steel2);width:100%;border-radius:18px 18px 0 0;padding:16px 16px 20px;max-height:92dvh;overflow:auto;}
+  .sheet .a{font-size:12px;color:var(--amber);font-weight:800;letter-spacing:.06em;}
+  .sheet .d{font-size:16px;margin:4px 0 2px;line-height:1.3;}
+  .qty{display:flex;align-items:center;gap:8px;}
+  .qty input{text-align:center;font-size:26px;font-weight:800;padding:10px;}
+  .qty .um{font-size:16px;color:var(--mute);min-width:36px;}
+  .step{display:flex;gap:6px;margin-top:8px;}
+  .step button{flex:1;background:var(--steel);border:1px solid var(--line);color:var(--paper);border-radius:10px;padding:10px 0;font-size:15px;font-weight:700;}
+  .two{display:flex;gap:10px;margin-top:16px;} .two .btn{flex:1;}
+  .sum{background:var(--steel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.5;white-space:pre-wrap;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;}
+  .toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%);background:var(--ok);color:#06140c;font-weight:700;padding:10px 16px;border-radius:999px;z-index:30;font-size:14px;opacity:0;transition:opacity .2s;}
+  .toast.on{opacity:1;}
+  .hint{font-size:12px;color:var(--mute);margin-top:6px;line-height:1.4;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">Antes <span>·</span> Rapportino</div>
+  <div class="sub" id="cantiereSub"></div>
+  <div class="bar hidden" id="statusBar">
+    <span class="pill" id="pData"></span>
+    <span class="pill">SAL <b id="pSal"></b></span>
+    <span class="pill" id="pCs"></span>
+    <span class="pill"><b id="pCount">0</b> righe</span>
+  </div>
+</header>
+
+<!-- ============ SCHERMATA 1: apertura giornata ============ -->
+<section id="scrStart" class="hidden">
+<main>
+  <h2>Apri la giornata</h2>
+  <label>Caposquadra</label>
+  <input id="fCs" placeholder="Nome e cognome" autocomplete="name">
+  <div class="row">
+    <div><label>Data</label><input id="fData" type="date"></div>
+    <div><label>SAL n.</label><select id="fSal"><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+  </div>
+  <div class="row">
+    <div><label>Operai presenti</label><input id="fOp" type="number" inputmode="numeric" min="1" placeholder="n."></div>
+    <div><label>Ore totali</label><input id="fOre" type="number" inputmode="decimal" min="0" step="0.5" placeholder="es. 32"></div>
+  </div>
+  <label>Nomi operai</label>
+  <input id="fNomi" placeholder="es. Rossi, Bianchi, Verdi">
+  <label>Meteo</label>
+  <div class="chips" id="fMeteo"></div>
+  <div style="margin-top:22px"><button class="btn" id="bStart">Inizia rapportino</button></div>
+</main>
+</section>
+
+<!-- ============ SCHERMATA 2: voci ============ -->
+<section id="scrVoci" class="hidden">
+<main>
+  <div class="hint">Tocca una voce per aggiungere la quantità posata oggi. Puoi aggiungere più righe sulla stessa voce (es. terminal diversi).</div>
+  <div id="list"></div>
+  <h2>Note di giornata</h2>
+  <textarea id="fNote" placeholder="Lavori extra / varianti, problemi, materiale mancante, ordini DL"></textarea>
+  <div style="margin-top:14px" class="row">
+    <div><button class="btn ghost" id="bEditDay">Modifica dati giornata</button></div>
+  </div>
+</main>
+<div class="foot"><button class="btn" id="bReview">Chiudi giornata e invia</button></div>
+</section>
+
+<!-- ============ SCHERMATA 3: riepilogo ============ -->
+<section id="scrSend" class="hidden">
+<main>
+  <h2>Riepilogo</h2>
+  <div class="sum" id="sumBox"></div>
+  <div style="margin-top:16px"><button class="btn" id="bShareCsv">Invia file CSV all'ufficio</button></div>
+  <div style="margin-top:10px"><button class="btn ghost" id="bShareTxt">Invia come testo (WhatsApp)</button></div>
+  <div class="hint">Il CSV va incollato nel foglio "Libretto misure" dell'Excel di contabilità, dalla colonna Data in poi.</div>
+  <div style="margin-top:22px" class="row">
+    <div><button class="btn ghost" id="bBack">Torna alle voci</button></div>
+  </div>
+  <div style="margin-top:10px"><button class="btn danger" id="bNewDay">Nuova giornata (svuota)</button></div>
+</main>
+</section>
+
+<!-- ============ FOGLIO inserimento ============ -->
+<div class="shade hidden" id="sheet">
+  <div class="sheet">
+    <div class="a" id="sA"></div>
+    <div class="d" id="sD"></div>
+    <label>Quantità</label>
+    <div class="qty"><input id="sQ" type="number" inputmode="decimal" min="0" step="any"><span class="um" id="sUm"></span></div>
+    <div class="step" id="sStep"></div>
+    <label>Ubicazione</label>
+    <div class="chips" id="sUb"></div>
+    <label>Riferimento (fila, inverter, tratto)</label>
+    <input id="sRif" placeholder="es. Fila 1-4 lato nord">
+    <div class="two">
+      <button class="btn ghost" id="sCancel">Annulla</button>
+      <button class="btn" id="sOk">Aggiungi</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= CONFIGURAZIONE COMMESSA ================= */
+const COMMESSA = {
+  id: "ANC-FV-AEROPORTO",
+  nome: "FV Aeroporto Ancona 935,08 kWp",
+  rif: "Commessa ANC00913/00786 · F.lli Franchini",
+  ubicazioni: ["Terminal Partenze","Terminal Arrivi","Cabina MT/BT","Altro"],
+  voci: [
+    {cap:"1 · Moduli fotovoltaici"},
+    {art:"ART.01.01", d:"Posa connettori MC4 maschio/femmina", um:"nr."},
+    {art:"ART.01.02", d:"Collegamento modulo FV all'impianto di terra", um:"nr."},
+    {cap:"2 · Canalina portacavi"},
+    {art:"ART.02.01", d:"Canale a filo Sendzimir in copertura 200x54 mm", um:"m"},
+    {art:"ART.02.02", d:"Canale a filo Sendzimir in copertura 300x75 mm", um:"m"},
+    {art:"ART.02.03", d:"Passerella zincata a caldo a parete/staffa 500x100 mm", um:"m"},
+    {art:"ART.02.04", d:"Guaina flessibile poliammide Ø32 IP65 anti-UV (stringhe)", um:"m"},
+    {cap:"3 · Linee elettriche"},
+    {art:"ART.03.01", d:"Cavo solare H1Z2Z2-K 1x6 mmq ROSSO", um:"m"},
+    {art:"ART.03.02", d:"Cavo solare H1Z2Z2-K 1x6 mmq NERO", um:"m"},
+    {art:"ART.03.03", d:"Cavo FG16(O)R16 3x1x120+1PE70 mmq", um:"m"},
+    {art:"ART.03.04", d:"Cavo FG16(O)R16 3(1x70)+1PE35 mmq", um:"m"},
+    {art:"ART.03.05", d:"Cavo segnale 2x1,5 armato/twistato/schermato TV → DI", um:"m"},
+    {art:"ART.03.06", d:"Collegamento segnale 3 TV box MT → dispositivo d'interfaccia", um:"nr."},
+    {cap:"4 · Inverter"},
+    {art:"ART.04.01", d:"Posa inverter 100 kW", um:"nr."},
+    {art:"ART.04.02", d:"Collegamento inverter 100 kW (stringhe + linea QGFV)", um:"nr."},
+    {art:"ART.04.03", d:"Struttura porta inverter con tettoia", um:"a.c."},
+    {cap:"5 · Quadri elettrici"},
+    {art:"ART.05.01", d:"Posa Quadro Generale FV fino a 1600 A", um:"nr."},
+    {art:"ART.05.02", d:"Collegamento Quadro Generale FV fino a 1600 A", um:"nr."},
+    {art:"ART.05.03", d:"Posa quadro sezionamento inverter 250 A", um:"nr."},
+    {art:"ART.05.04", d:"Collegamento quadro sezionamento inverter 250 A", um:"nr."},
+    {art:"ART.05.05", d:"Pulsante di sgancio generale FV", um:"a.c."},
+    {cap:"6 · Monitoraggio"},
+    {art:"ART.06.01", d:"Cavo RS485 Belden fra inverter", um:"m"},
+    {art:"ART.06.02", d:"Cavo cat. 6 inverter master → switch", um:"m"},
+    {art:"ART.06.03", d:"Montaggio stazione meteo", um:"a.c."}
+  ]
+};
+const METEO = ["Sereno","Nuvoloso","Vento","Pioggia"];
+/* =========================================================== */
+
+const KEY = "rapportino_" + COMMESSA.id;
+const $ = id => document.getElementById(id);
+let S = load();
+
+function blank(keep){
+  return {
+    cs: keep?.cs || "", sal: keep?.sal || "1",
+    data: new Date().toISOString().slice(0,10),
+    op: keep?.op || "", ore: "", nomi: keep?.nomi || "", meteo: "",
+    started: false, righe: [], note: ""
+  };
+}
+function load(){ try{ const s = JSON.parse(localStorage.getItem(KEY)); if(s && Array.isArray(s.righe)) return s; }catch(e){} return blank(); }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+function toast(t){ const el=$("toast"); el.textContent=t; el.classList.add("on"); setTimeout(()=>el.classList.remove("on"),1400); }
+function fmtData(iso){ if(!iso) return ""; const [y,m,d]=iso.split("-"); return `${d}/${m}/${y}`; }
+function fmtN(n){ return Number(n).toLocaleString("it-IT",{maximumFractionDigits:2}); }
+const voceBy = a => COMMESSA.voci.find(v=>v.art===a);
+
+$("cantiereSub").textContent = COMMESSA.nome;
+
+/* ---------- navigazione ---------- */
+function show(id){
+  ["scrStart","scrVoci","scrSend"].forEach(s=>$(s).classList.toggle("hidden", s!==id));
+  $("statusBar").classList.toggle("hidden", id==="scrStart");
+  window.scrollTo(0,0);
+}
+function refreshBar(){
+  $("pData").textContent = fmtData(S.data);
+  $("pSal").textContent = S.sal;
+  $("pCs").textContent = S.cs || "—";
+  $("pCount").textContent = S.righe.length;
+}
+
+/* ---------- apertura giornata ---------- */
+function fillStart(){
+  $("fCs").value=S.cs; $("fData").value=S.data; $("fSal").value=S.sal;
+  $("fOp").value=S.op; $("fOre").value=S.ore; $("fNomi").value=S.nomi;
+  const m=$("fMeteo"); m.innerHTML="";
+  METEO.forEach(x=>{ const b=document.createElement("button"); b.className="chip"+(S.meteo===x?" on":""); b.textContent=x;
+    b.onclick=()=>{ S.meteo = S.meteo===x?"":x; fillStartMeteo(); }; m.appendChild(b); });
+}
+function fillStartMeteo(){ [...$("fMeteo").children].forEach(b=>b.classList.toggle("on", b.textContent===S.meteo)); }
+$("bStart").onclick=()=>{
+  const cs=$("fCs").value.trim();
+  if(!cs){ $("fCs").focus(); toast("Inserisci il caposquadra"); return; }
+  if(!$("fData").value){ toast("Inserisci la data"); return; }
+  Object.assign(S,{cs, data:$("fData").value, sal:$("fSal").value, op:$("fOp").value, ore:$("fOre").value, nomi:$("fNomi").value.trim(), started:true});
+  save(); refreshBar(); renderList(); show("scrVoci");
+};
+$("bEditDay").onclick=()=>{ fillStart(); show("scrStart"); };
+
+/* ---------- elenco voci ---------- */
+function renderList(){
+  const L=$("list"); L.innerHTML="";
+  COMMESSA.voci.forEach(v=>{
+    if(v.cap){ const c=document.createElement("div"); c.className="cap"; c.textContent=v.cap; L.appendChild(c); return; }
+    const mine=S.righe.filter(r=>r.art===v.art);
+    const tot=mine.reduce((s,r)=>s+r.q,0);
+    const b=document.createElement("button"); b.className="voce"+(mine.length?" has":"");
+    b.innerHTML=`<div class="t"><div class="a">${v.art}</div><div class="d"></div></div><div class="q">${mine.length?fmtN(tot):"—"}<small>${v.um}</small></div>`;
+    b.querySelector(".d").textContent=v.d;
+    b.onclick=()=>openSheet(v);
+    L.appendChild(b);
+    if(mine.length){
+      const box=document.createElement("div"); box.className="entries";
+      mine.forEach(r=>{
+        const e=document.createElement("div"); e.className="entry";
+        e.innerHTML=`<b></b><span class="m"></span><button class="x" aria-label="Elimina">×</button>`;
+        e.querySelector("b").textContent=fmtN(r.q)+" "+v.um;
+        e.querySelector(".m").textContent=[r.ub,r.rif].filter(Boolean).join(" · ");
+        e.querySelector(".x").onclick=()=>{ if(confirm("Eliminare questa riga?")){ S.righe=S.righe.filter(x=>x.id!==r.id); save(); renderList(); refreshBar(); } };
+        box.appendChild(e);
+      });
+      L.appendChild(box);
+    }
+  });
+  $("fNote").value=S.note;
+}
+$("fNote").addEventListener("input",e=>{ S.note=e.target.value; save(); });
+
+/* ---------- foglio inserimento ---------- */
+let cur=null, curUb="";
+function openSheet(v){
+  cur=v; $("sA").textContent=v.art; $("sD").textContent=v.d; $("sUm").textContent=v.um;
+  $("sQ").value=""; $("sRif").value="";
+  const last=[...S.righe].reverse().find(r=>r.ub); curUb = last?last.ub:"";
+  const ub=$("sUb"); ub.innerHTML="";
+  COMMESSA.ubicazioni.forEach(u=>{ const c=document.createElement("button"); c.className="chip"+(curUb===u?" on":""); c.textContent=u;
+    c.onclick=()=>{ curUb=u; [...ub.children].forEach(x=>x.classList.toggle("on",x.textContent===u)); }; ub.appendChild(c); });
+  const st=$("sStep"); st.innerHTML="";
+  const steps = v.um==="m" ? [1,5,10,50] : [1,2,5,10];
+  steps.forEach(n=>{ const b=document.createElement("button"); b.textContent="+"+n;
+    b.onclick=()=>{ $("sQ").value = fmtRaw((parseFloat($("sQ").value.replace(",","."))||0)+n); }; st.appendChild(b); });
+  $("sheet").classList.remove("hidden");
+  setTimeout(()=>$("sQ").focus(),150);
+}
+function fmtRaw(n){ return Math.round(n*100)/100; }
+function closeSheet(){ $("sheet").classList.add("hidden"); cur=null; }
+$("sCancel").onclick=closeSheet;
+$("sheet").addEventListener("click",e=>{ if(e.target.id==="sheet") closeSheet(); });
+$("sOk").onclick=()=>{
+  const q=parseFloat(String($("sQ").value).replace(",","."));
+  if(!(q>0)){ toast("Inserisci una quantità"); $("sQ").focus(); return; }
+  if(!curUb){ toast("Scegli l'ubicazione"); return; }
+  S.righe.push({id:Date.now()+"-"+Math.random().toString(36).slice(2,6), art:cur.art, q:fmtRaw(q), ub:curUb, rif:$("sRif").value.trim()});
+  save(); closeSheet(); renderList(); refreshBar();
+  if(navigator.vibrate) navigator.vibrate(30);
+  toast("Aggiunto");
+};
+$("sQ").addEventListener("keydown",e=>{ if(e.key==="Enter") $("sRif").focus(); });
+
+/* ---------- riepilogo e invio ---------- */
+function ordered(){
+  const idx=a=>COMMESSA.voci.findIndex(v=>v.art===a);
+  return [...S.righe].sort((a,b)=>idx(a.art)-idx(b.art));
+}
+function buildText(){
+  let t=`RAPPORTINO ${fmtData(S.data)} — ${COMMESSA.nome}\n`;
+  t+=`SAL ${S.sal} · Caposquadra: ${S.cs}\n`;
+  t+=`Operai: ${S.op||"-"}${S.nomi?" ("+S.nomi+")":""} · Ore: ${S.ore||"-"}${S.meteo?" · Meteo: "+S.meteo:""}\n\n`;
+  const rows=ordered();
+  if(!rows.length) t+="Nessuna quantità registrata.\n";
+  rows.forEach(r=>{ const v=voceBy(r.art); t+=`• ${r.art} ${v.d}: ${fmtN(r.q)} ${v.um} — ${r.ub}${r.rif?" ("+r.rif+")":""}\n`; });
+  if(S.note.trim()) t+=`\nNOTE: ${S.note.trim()}\n`;
+  return t;
+}
+function csvCell(s){ s=String(s??""); return /[;"\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; }
+function buildCSV(){
+  // Stesso ordine di colonne del foglio "Libretto misure" (da colonna B)
+  let c="﻿Data;SAL n.;Art.;Descrizione voce;UM;Ubicazione;Quantità;Riferimento / note\n";
+  ordered().forEach(r=>{ const v=voceBy(r.art);
+    c+=[fmtData(S.data),S.sal,r.art,v.d,v.um,r.ub,String(r.q).replace(".",","),[r.rif,"Capo: "+S.cs].filter(Boolean).join(" · ")].map(csvCell).join(";")+"\n"; });
+  c+="\n";
+  c+=["# Caposquadra",S.cs].map(csvCell).join(";")+"\n";
+  c+=["# Operai",S.op,S.nomi].map(csvCell).join(";")+"\n";
+  c+=["# Ore totali",S.ore].map(csvCell).join(";")+"\n";
+  c+=["# Meteo",S.meteo].map(csvCell).join(";")+"\n";
+  c+=["# Note",S.note.trim()].map(csvCell).join(";")+"\n";
+  return c;
+}
+function fname(){
+  const cs=S.cs.replace(/[^a-zA-Z0-9]+/g,"-").replace(/^-|-$/g,"");
+  return `rapportino-aeroporto-ancona-${S.data}-${cs||"squadra"}.csv`;
+}
+$("bReview").onclick=()=>{
+  if(!S.righe.length && !S.note.trim()){ if(!confirm("Nessuna quantità inserita. Vuoi comunque chiudere la giornata?")) return; }
+  $("sumBox").textContent=buildText(); show("scrSend");
+};
+$("bBack").onclick=()=>{ renderList(); show("scrVoci"); };
+$("bShareCsv").onclick=async()=>{
+  const file=new File([buildCSV()], fname(), {type:"text/csv"});
+  if(navigator.canShare && navigator.canShare({files:[file]})){
+    try{ await navigator.share({files:[file], title:"Rapportino "+fmtData(S.data)}); return; }
+    catch(e){ if(e.name==="AbortError") return; }
+  }
+  const url=URL.createObjectURL(file); const a=document.createElement("a"); a.href=url; a.download=file.name; a.click(); URL.revokeObjectURL(url);
+};
+$("bShareTxt").onclick=async()=>{
+  const t=buildText();
+  if(navigator.share){ try{ await navigator.share({text:t}); return; }catch(e){ if(e.name==="AbortError") return; } }
+  location.href="https://wa.me/?text="+encodeURIComponent(t);
+};
+$("bNewDay").onclick=()=>{
+  if(!confirm("Hai inviato il rapportino? La giornata verrà svuotata (caposquadra, SAL e squadra restano).")) return;
+  S=blank(S); save(); fillStart(); show("scrStart");
+};
+
+/* ---------- avvio ---------- */
+if(S.started){ refreshBar(); renderList(); show("scrVoci"); } else { fillStart(); show("scrStart"); }
+</script>
+</body>
+</html>
